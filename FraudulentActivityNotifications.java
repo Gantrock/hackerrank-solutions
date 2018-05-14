@@ -15,51 +15,62 @@ public class Solution {
         int[] pastActivity = new int[201];
         //The oldest
         int oldest = 0;
+        //The number of notifications we will be returning
         int notes = 0;
+        //perform d transactions first, adding the number to the trailing list and starting Counting Sort.
         for(int i = 0; i < d; i++) {
             trailing.add(expenditure[i]);
             pastActivity[expenditure[i]] = pastActivity[expenditure[i]] + 1;
 }
+        //starting fromd (because we've already done those transactions) we begin to check for fraud.
         for(int i = d; i < expenditure.length; i++) {
-                /*Establish the median, if even take the average of the two medium values, if odd simply take the middle value*/
+                //Check the current value against the median. If the current value is greater than ir equal to 2 * median we increment notes.
                 if(expenditure[i] >= (2 * median(pastActivity, d))){
                     notes++;
                 }
+            //The oldest value so that we can properly decerement the Counting Sort array.
                 oldest = trailing.poll();
                 pastActivity[oldest] = pastActivity[oldest] - 1;
             
+            //Add the new value.
                 trailing.add(expenditure[i]);
                 pastActivity[expenditure[i]] = pastActivity[expenditure[i]] + 1;
         }
         return notes;
     }
     
+    //Finds the median value using the system described in the problem.
     static double median(int[] past, int number) {
         int index = 0;
         int counter = number / 2;
         
-        if(number % 2 == 0) {           
+        //If number is even we use the even method.
+        if(number % 2 == 0) {
+            //Iterate through the past array subtracting the value from each counted index as we go.
             while(counter > 0) {
                 counter -= past[index];
                 index++;
             }
             //remove final iteration.
             index--;
+            //If our index is before the array obviously that's a problem so we just return it.
             if(counter <= -1) {
                 return index;
-            } else {
+            } else {//We take the average of the two middle values.
                 int firDex = index;
                 int secDex = index + 1;
+                //Iterate through past until we find a none-zero count.
                 while(past[secDex] == 0) {
                     secDex++;
                 }
                 return (double) (firDex + secDex) / 2.0;
             }
-        } else {
+        } else {//If the number is odd use the odd method.
             while(counter >= 0) {
                 counter -= past[index];
                 index++;
             }
+            //return the middle item.
             return (double) index-1;
         }
     }
