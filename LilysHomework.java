@@ -69,9 +69,7 @@ public class Solution {
         }
         //Reverse the order of the rev array
         for(int r = 0; r < n / 2; r++) {
-            int temp = arr[r];
-            arr[r] = arr[(n - 1) - r];
-            arr[(n - 1) - r] = temp;
+            swap(r, (n-1)-r, rev);
         }
         
         //result is the minimum value between performing the lilysHomework method on the original and reversed arrays.
